@@ -1,16 +1,10 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useHistory } from 'react-router-dom'
-
-import { getData } from '../services/FirebaseService'
 
 import Button from '../components/Button'
 
 const Home = () => {
   let history = useHistory()
-
-  useEffect(() => {
-    console.log(getData('users', 'email', 'asc'))
-  })
 
   return (
     <>
