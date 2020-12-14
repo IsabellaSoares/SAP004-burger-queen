@@ -1,9 +1,9 @@
-import firebase from '../utils/firebaseUtils'
+import db from '../utils/firebaseUtils'
 
 const getData = (collection, orderField, order) => {
   let results = []
 
-  firebase
+  db
   .firestore()
   .collection(collection)
   .orderBy(orderField, order)
@@ -21,4 +21,4 @@ const getData = (collection, orderField, order) => {
   return results
 }
 
-export default { getData }
+export default getData
