@@ -1,6 +1,6 @@
 import db from '../utils/firebaseUtils'
 
-const getData = (collection, orderField, order) => {
+export const getData = (collection, orderField, order) => {
   let results = []
 
   db
@@ -21,4 +21,18 @@ const getData = (collection, orderField, order) => {
   return results
 }
 
-export default getData
+export const postUser = (email, password, type) => {
+  db
+  .firestore()
+  .collection('users').add({
+    email,
+    password,
+    type
+  })
+  .then(docRef => {
+      console.log('Document written with ID: ', docRef.id);
+  })
+  .catch(error => {
+      console.error('Error adding document: ', error);
+  })
+}
