@@ -1,9 +1,9 @@
 import React, { Suspense } from 'react'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 
-const Home = React.lazy(() => import('./pages/Home'))
-const Register = React.lazy(() => import('./pages/RegisterForm'))
-const Login = React.lazy(() => import('./pages/LoginForm'))
+import Home from './pages/Home'
+import Register from './pages/RegisterForm'
+import Login from './pages/LoginForm'
 
 const Routes = () => (
   <Suspense fallback="Loading..." >
