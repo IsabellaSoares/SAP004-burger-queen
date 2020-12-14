@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 
-import getData from '../services/FirebaseService'
+import { getData } from '../services/FirebaseService'
 
 import Button from '../components/Button'
 
