@@ -36,3 +36,25 @@ export const postUser = (email, password, type) => {
       console.error('Error adding document: ', error);
   })
 }
+
+export const getUser = (email, password) => {
+  let user = []
+
+  db
+  .firestore()
+  .collection('users')
+  .where("email", "==", email)
+  .where("password", "==", password)
+  .get()
+  .then(async (result) => {
+    await result
+      .docs
+      .forEach(doc => user
+        .push({
+          id: doc.id,
+          ...doc.data()
+        }))
+  })
+
+  return user
+}
