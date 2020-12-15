@@ -7,7 +7,7 @@ import db from '../utils/firebaseUtils'
 import Button from '../components/Input'
 import Input from '../components/Input'
 
-const RegisterForm = () => {
+const SignUpForm = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [userType, setUserType] = useState('kitchen')
@@ -16,21 +16,15 @@ const RegisterForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault()
     
-    const result = await createUser(email, password)
-    
-    if (result === 'Sucesso') {
-      const userId = db.auth().currentUser.uid
-      const createdUser = await addUserType(userId, userType)
+    createUser(email, password)
+    .then(async result => {
+      const userId = result.user.uid
 
-      if (createdUser) {
-        history.push(userType)
-      } else {
-        alert('Houve um problema ao criar o seu usuário')
-      }
-    } else {
-      alert('Houve um problema ao criar o seu usuário')
-      console.log(result)
-    }
+      await db.firestore().collection('users').doc(userId).set({
+        type: userType
+      }).then(() => history.push(userType))
+    })
+    .catch(error => console.error(error))
   }
 
   return (
@@ -51,4 +45,4 @@ const RegisterForm = () => {
   )
 }
 
-export default RegisterForm
+export default SignUpForm

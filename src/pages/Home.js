@@ -9,7 +9,7 @@ const Home = () => {
   return (
     <>
       <h1>Home</h1>
-      <Button text='Cadastrar' onClick={() => history.push('register')} />
+      <Button text='Cadastrar' onClick={() => history.push('signup')} />
       <Button text='Entrar' onClick={() => history.push('login')} />
     </>
   )

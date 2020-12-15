@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 
 import Home from './pages/Home'
 import Login from './pages/LoginForm'
-import Register from './pages/RegisterForm'
+import SignUp from './pages/SignUpForm'
 
 test('Home => renders homepage', () => {
   render(<Home />);
@@ -10,8 +10,8 @@ test('Home => renders homepage', () => {
   expect(title).toBeInTheDocument();
 });
 
-test('Register => renders register form', () => {
-  render(<Register />);
+test('SignUp => renders sign up form', () => {
+  render(<SignUp />);
   const title = screen.getByText('Cadastro');
   expect(title).toBeInTheDocument();
 });

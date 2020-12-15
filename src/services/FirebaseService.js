@@ -21,16 +21,10 @@ export const getData = (collection, orderField, order) => {
   return results
 }
 
-export const createUser = async (email, password, type) => {
-  try {
-    db
-    .auth()
-    .createUserWithEmailAndPassword(email, password)
-    
-    return 'Sucesso'
-  } catch (error) {
-    return error
-  }
+export const createUser = (email, password) => {
+  return db
+        .auth()
+        .createUserWithEmailAndPassword(email, password)
 }
 
 export const addUserType = async (user, type) => {
@@ -60,21 +54,14 @@ export const login = async (email, password, history) => {
 
     db
     .firestore()
-    .collection('user_types')
-    .where('user', '==', userId)
+    .collection('users')
+    .doc(userId)
     .get()
-    .then(async (result) => {
-      if (result.docs.length === 0) {
-        alert('Usuário não encontrado')
-        return
-      }
-
-      await result
-        .docs
-        .forEach(doc => history.push(doc.data().type))
-      })
-    } catch (error) {
-      console.error(error)
-      alert('Houve um erro ao tentar realizar o login')
-    }
+    .then((result) => {
+      history.push(result.data().type)
+    })
+  } catch (error) {
+    console.error(error)
+    alert('Houve um erro ao tentar realizar o login')
+  }
 }
