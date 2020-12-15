@@ -1,4 +1,7 @@
 import React, { useState } from 'react'
+import { useHistory } from 'react-router-dom'
+
+import { login } from '../services/FirebaseService'
 
 import Button from '../components/Input'
 import Input from '../components/Input'
@@ -6,10 +9,11 @@ import Input from '../components/Input'
 const LoginForm = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const history = useHistory()
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
-    console.log(email, password)
+    login(email, password, history)
   }
 
   return (
