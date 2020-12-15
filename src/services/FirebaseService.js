@@ -21,40 +21,30 @@ export const getData = (collection, orderField, order) => {
   return results
 }
 
-export const postUser = (email, password, type) => {
+export const createUser = async (email, password, type) => {
   db
-  .firestore()
-  .collection('users').add({
-    email,
-    password,
-    type
-  })
-  .then(docRef => {
-      console.log('Document written with ID: ', docRef.id);
-  })
+  .auth()
+  .createUserWithEmailAndPassword(email, password)
   .catch(error => {
-      console.error('Error adding document: ', error);
+      return error
   })
+
+  return 'Sucesso'
 }
 
-export const getUser = (email, password) => {
-  let user = []
+export const addUserType = async (user, type) => {
+  try {
+    db
+    .firestore()
+    .collection('user_types')
+    .add({
+      user,
+      type
+    })
 
-  db
-  .firestore()
-  .collection('users')
-  .where("email", "==", email)
-  .where("password", "==", password)
-  .get()
-  .then(async (result) => {
-    await result
-      .docs
-      .forEach(doc => user
-        .push({
-          id: doc.id,
-          ...doc.data()
-        }))
-  })
-
-  return user
+    return true
+  } catch (error) {
+    console.error(error)
+    return false
+  }
 }
