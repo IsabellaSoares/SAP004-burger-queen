@@ -27,23 +27,6 @@ export const createUser = (email, password) => {
         .createUserWithEmailAndPassword(email, password)
 }
 
-export const addUserType = async (user, type) => {
-  try {
-    db
-    .firestore()
-    .collection('user_types')
-    .add({
-      user,
-      type
-    })
-
-    return true
-  } catch (error) {
-    console.error(error)
-    return false
-  }
-}
-
 export const login = async (email, password, history) => {
   try {
     await db

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 
-import { createUser, addUserType } from '../services/FirebaseService'
+import { createUser } from '../services/FirebaseService'
 import db from '../utils/firebaseUtils'
 
 import Button from '../components/Input'
