@@ -1,12 +1,11 @@
 import db from '../utils/firebaseUtils'
 
-export const getData = (collection, orderField, order) => {
+export const getData = (collection) => {
   let results = []
 
   db
   .firestore()
   .collection(collection)
-  .orderBy(orderField, order)
   .get()
   .then(async (result) => {
     await result
