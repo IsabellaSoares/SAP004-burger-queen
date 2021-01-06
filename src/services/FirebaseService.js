@@ -20,6 +20,27 @@ export const getData = (collection) => {
   return results
 }
 
+export const getOrders = () => {
+  let results = []
+
+  db
+  .firestore()
+  .collection('orders')
+  .orderBy('date', 'asc')
+  .get()
+  .then(async (result) => {
+    await result
+      .docs
+      .forEach(doc => results
+        .push({
+          id: doc.id,
+          ...doc.data()
+        }))
+  })
+
+  return results
+}
+
 export const createUser = (email, password) => {
   return db
         .auth()
@@ -46,4 +67,11 @@ export const login = async (email, password, history) => {
     console.error(error)
     alert('Houve um erro ao tentar realizar o login')
   }
+}
+
+export const createOrder = (order) => {
+  return db
+        .firestore()
+        .collection('orders')
+        .add(order)
 }
