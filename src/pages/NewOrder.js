@@ -40,11 +40,31 @@ const NewOrder = () => {
   const addProduct = (item) => {
     setValue(value + item.price)
 
-    setProducts([ ...products,  {
+    let newProduct = {
       id: products.length,
       item: item.item,
       price: item.price
-    }])
+    }
+
+    if (item.type === 'hamburguer') {
+      newProduct.option = ''
+      newProduct.additionals = []
+    }
+
+    setProducts([ ...products,  newProduct])
+  }
+
+  const addOption = (item) => {
+    products[products.length - 1].option = item
+    setProducts([ ...products])
+  }
+
+  const addAdditional = (item) => {
+    products[products.length - 1].additionals.push(item.item)
+    products[products.length - 1].price = value + item.price
+    
+    setValue(value + item.price)
+    setProducts([ ...products])
   }
 
   const handleSubmit = (e) => {
@@ -59,6 +79,8 @@ const NewOrder = () => {
     }
 
     createOrder(order)
+      .then(() => alert('Pedido criado!'))
+      .catch(() => alert('Não foi possível criar o pedido :('))
   }
 
   return (
@@ -111,9 +133,9 @@ const NewOrder = () => {
           { showOptions && (
             <section>
               <h3>Selecione o tipo da carne</h3>
-              <span onClick={() => addProduct({ item: 'Carne bovina', price: 0 })}>Carne bovina</span>
-              <span onClick={() => addProduct({ item: 'Carne de frango', price: 0 })}>Carne de frango</span>
-              <span onClick={() => addProduct({ item: 'Vegetariano', price: 0 })}>Vegetariano</span>
+              <span onClick={() => addOption('Carne bovina')}>Carne bovina</span>
+              <span onClick={() => addOption('Carne de frango')}>Carne de frango</span>
+              <span onClick={() => addOption('Vegetariano')}>Vegetariano</span>
             </section>
           ) }
 
@@ -123,7 +145,7 @@ const NewOrder = () => {
               { menu.filter(item => item.type === 'additional').map(item => 
                 <span 
                   key={item.id}
-                  onClick={() => addProduct(item)}
+                  onClick={() => addAdditional(item)}
                 >
                   {item.item}
                 </span>
