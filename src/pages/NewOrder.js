@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { getData, createOrder } from '../services/FirebaseService'
 
@@ -19,12 +19,11 @@ const NewOrder = () => {
   const [products, setProducts] = useState([])
   const [value, setValue] = useState(0)
 
-  const [, updateState] = useState();
-  const forceUpdate = useCallback(() => updateState({}), []);
-
   useEffect(() => {
-    setMenu(getData('menu'))
-    setLoading(false)
+    getData('menu').then(results => {
+      setMenu(results)
+      setLoading(false)
+    })
   }, [])
 
   const handleMenuChange = (active, type) => {
@@ -39,18 +38,13 @@ const NewOrder = () => {
   }
 
   const addProduct = (item) => {
-    let copy = products
-
     setValue(value + item.price)
 
-    copy.push({
+    setProducts([ ...products,  {
       id: products.length,
       item: item.item,
       price: item.price
-    })
-
-    setProducts(copy)
-    forceUpdate()
+    }])
   }
 
   const handleSubmit = (e) => {

@@ -1,57 +1,43 @@
 import db from '../utils/firebaseUtils'
 
 export const getData = (collection) => {
-  let results = []
-
-  db
-  .firestore()
-  .collection(collection)
-  .get()
-  .then(async (result) => {
-    await result
-      .docs
-      .forEach(doc => results
-        .push({
+  return db
+    .firestore()
+    .collection(collection)
+    .get()
+    .then((result) => 
+      result.docs.map(doc =>
+        ({
           id: doc.id,
           ...doc.data()
-        }))
-  })
-
-  return results
+        })
+      )
+    )
 }
 
 export const getOrders = () => {
-  let results = []
-
-  db
-  .firestore()
-  .collection('orders')
-  .orderBy('date', 'asc')
-  .get()
-  .then(async (result) => {
-    await result
-      .docs
-      .forEach(doc => results
-        .push({
+  return db
+    .firestore()
+    .collection('orders')
+    .orderBy('date', 'asc')
+    .get()
+    .then((result) => 
+      result.docs.map(doc =>
+        ({
           id: doc.id,
           ...doc.data()
-        }))
-  })
-
-  return results
+        })
+      )
+    )
 }
 
 export const createUser = (email, password) => {
-  return db
-        .auth()
-        .createUserWithEmailAndPassword(email, password)
+  return db.auth().createUserWithEmailAndPassword(email, password)
 }
 
 export const login = async (email, password, history) => {
   try {
-    await db
-    .auth()
-    .signInWithEmailAndPassword(email, password)
+    await db.auth().signInWithEmailAndPassword(email, password)
 
     const userId = await db.auth().currentUser.uid
 
@@ -70,8 +56,5 @@ export const login = async (email, password, history) => {
 }
 
 export const createOrder = (order) => {
-  return db
-        .firestore()
-        .collection('orders')
-        .add(order)
+  return db.firestore().collection('orders').add(order)
 }
