@@ -19,7 +19,7 @@ export const getOrders = () => {
   return db
     .firestore()
     .collection('orders')
-    .orderBy('date', 'asc')
+    .orderBy('createdAt', 'asc')
     .get()
     .then((result) => 
       result.docs.map(doc =>
@@ -33,6 +33,10 @@ export const getOrders = () => {
 
 export const createUser = (email, password) => {
   return db.auth().createUserWithEmailAndPassword(email, password)
+}
+
+export const createOrder = (order) => {
+  return db.firestore().collection('orders').add(order)
 }
 
 export const login = async (email, password, history) => {
@@ -55,6 +59,14 @@ export const login = async (email, password, history) => {
   }
 }
 
-export const createOrder = (order) => {
-  return db.firestore().collection('orders').add(order)
+export const startOrder = (orderId) => {
+  return db.firestore().collection('orders').doc(orderId).update({ updatedAt: new Date() })
+}
+
+export const finishOrder = (orderId) => {
+  return db
+    .firestore()  
+    .collection('orders').doc(orderId).update({
+      finished: new Date(),
+    })
 }
