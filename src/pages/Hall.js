@@ -8,7 +8,7 @@ const Hall = () => {
     <>
       <h1>Hall Page</h1>
       <button onClick={() => history.push('/hall/new_order')}>Novo pedido</button>
-      <button>Checar cozinha</button>
+      <button onClick={() => history.push('/hall/ready_orders')}>Checar cozinha</button>
     </>
   )
 }

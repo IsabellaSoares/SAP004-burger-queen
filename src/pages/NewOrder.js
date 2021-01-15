@@ -74,6 +74,7 @@ const NewOrder = () => {
       createdAt: new Date(),
       updatedAt: null,
       finished: null,
+      delivered: false,
       name,
       table,
       value,

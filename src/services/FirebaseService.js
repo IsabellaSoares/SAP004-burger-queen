@@ -31,6 +31,23 @@ export const getOrders = () => {
     )
 }
 
+export const getReadyOrders = () => {
+  return db
+    .firestore()
+    .collection('orders')
+    // .where('delivered', '==', false)a
+    .orderBy('finished', 'asc')
+    .get()
+    .then((result) => 
+      result.docs.map(doc =>
+        ({
+          id: doc.id,
+          ...doc.data()
+        })
+      )
+    )
+}
+
 export const createUser = (email, password) => {
   return db.auth().createUserWithEmailAndPassword(email, password)
 }
@@ -64,9 +81,9 @@ export const startOrder = (orderId) => {
 }
 
 export const finishOrder = (orderId) => {
-  return db
-    .firestore()  
-    .collection('orders').doc(orderId).update({
-      finished: new Date(),
-    })
+  return db.firestore().collection('orders').doc(orderId).update({ finished: new Date() })
+}
+
+export const deliverOrder = (orderId) => {
+  return db.firestore().collection('orders').doc(orderId).update({ delivered: true })
 }

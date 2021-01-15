@@ -7,6 +7,7 @@ import Login from './pages/LoginForm'
 import Kitchen from './pages/Kitchen'
 import Hall from './pages/Hall'
 import NewOrder from './pages/NewOrder'
+import ReadyOrders from './pages/ReadyOrders'
 
 const Routes = () => (
   <Suspense fallback="Loading..." >
@@ -18,6 +19,7 @@ const Routes = () => (
         <Route exact path="/kitchen" component={() => <Kitchen />} />
         <Route exact path="/hall" component={() => <Hall />} />
         <Route exact path="/hall/new_order" component={() => <NewOrder />} />
+        <Route exact path="/hall/ready_orders" component={() => <ReadyOrders />} />
       </Switch>
     </BrowserRouter>
   </Suspense>
