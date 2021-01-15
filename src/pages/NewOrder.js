@@ -71,7 +71,9 @@ const NewOrder = () => {
     e.preventDefault()
 
     const order = {
-      date: new Date(),
+      createdAt: new Date(),
+      updatedAt: null,
+      finished: null,
       name,
       table,
       value,
@@ -79,8 +81,20 @@ const NewOrder = () => {
     }
 
     createOrder(order)
-      .then(() => alert('Pedido criado!'))
+      .then(() => {
+        alert('Pedido criado!')
+        clearForm()
+      })
       .catch(() => alert('Não foi possível criar o pedido :('))
+  }
+
+  const clearForm = () => {
+    setName('')
+    setTable('')
+    setProducts([])
+    setActiveMenu([])
+    setShowDinnerMenu(false)
+    setValue(0)
   }
 
   return (
