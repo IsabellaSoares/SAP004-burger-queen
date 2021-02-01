@@ -8,7 +8,7 @@ const ReadyOrders = () => {
 
   useEffect(() => {
     getReadyOrders().then((results) => {
-      const filteredResults = results.filter(result => !result.delivered)
+      const filteredResults = results.filter(result => !result.delivered && result.finished)
       setOrders(filteredResults);
       setLoading(false);
     });

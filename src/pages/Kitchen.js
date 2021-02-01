@@ -12,7 +12,8 @@ const Kitchen = () => {
 
   useEffect(() => {
     getOrders().then((results) => {
-      setOrders(results);
+      const filteredResults = results.filter(result => !result.finished)
+      setOrders(filteredResults);
       setLoading(false);
     });
   }, []);

@@ -35,7 +35,6 @@ export const getReadyOrders = () => {
   return db
     .firestore()
     .collection('orders')
-    // .where('delivered', '==', false)a
     .orderBy('finished', 'asc')
     .get()
     .then((result) => 
@@ -48,32 +47,58 @@ export const getReadyOrders = () => {
     )
 }
 
-export const createUser = (email, password) => {
-  return db.auth().createUserWithEmailAndPassword(email, password)
+export const createUser = (email, password, role, restaurant) => {
+  // return db.auth().createUserWithEmailAndPassword(email, password)
+
+  const requestOptions = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ 
+      email,
+      password,
+      role,
+      restaurant
+    })
+  };
+
+  return fetch('https://lab-api-bq.herokuapp.com/users', requestOptions)
+    .then(response => response.json());
 }
 
 export const createOrder = (order) => {
   return db.firestore().collection('orders').add(order)
 }
 
-export const login = async (email, password, history) => {
-  try {
-    await db.auth().signInWithEmailAndPassword(email, password)
+export const login = (email, password) => {
+  // try {
+    // await db.auth().signInWithEmailAndPassword(email, password)
 
-    const userId = await db.auth().currentUser.uid
+    // const userId = await db.auth().currentUser.uid
 
-    db
-    .firestore()
-    .collection('users')
-    .doc(userId)
-    .get()
-    .then((result) => {
-      history.push(result.data().type)
-    })
-  } catch (error) {
-    console.error(error)
-    alert('Houve um erro ao tentar realizar o login')
-  }
+    // db
+    // .firestore()
+    // .collection('users')
+    // .doc(userId)
+    // .get()
+    // .then((result) => {
+    //   history.push(result.data().type)
+    // })
+
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        email,
+        password
+      })
+    };
+  
+    return fetch('https://lab-api-bq.herokuapp.com/auth', requestOptions)
+      .then(response => response.json());
+  // } catch (error) {
+  //   console.error(error)
+  //   alert('Houve um erro ao tentar realizar o login')
+  // }
 }
 
 export const startOrder = (orderId) => {
