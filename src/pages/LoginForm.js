@@ -13,7 +13,15 @@ const LoginForm = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    login(email, password, history)
+    login(email, password)
+      .then(result => {
+        localStorage.setItem('token', result.token);
+        history.push(result.role);
+      })
+      .catch((error) => {
+        console.error(error)
+        alert('Houve um erro ao tentar realizar o login')
+      })
   }
 
   return (
