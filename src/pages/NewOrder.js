@@ -10,8 +10,6 @@ const NewOrder = () => {
   const [menu, setMenu] = useState([])
   const [activeMenu, setActiveMenu] = useState([])
   const [showDinnerMenu, setShowDinnerMenu] = useState(false)
-  const [showAdditionals, setShowAdditionals] = useState(false)
-  const [showOptions, setShowOptions] = useState(false)
   const [loading, setLoading] = useState(true)
 
   const [name, setName] = useState('')
@@ -20,51 +18,32 @@ const NewOrder = () => {
   const [value, setValue] = useState(0)
 
   useEffect(() => {
-    getData('menu').then(results => {
-      setMenu(results)
-      setLoading(false)
-    })
+    getData()
+      .then(results => {
+        setMenu(results)
+        console.log(results)
+        setLoading(false)
+      })
+      .catch(error => console.log(error))
   }, [])
 
   const handleMenuChange = (active, type) => {
     setShowDinnerMenu(active)
-    setActiveMenu(menu.filter(item => item.type === type))
+    
+    if (type === 'all-day') {
+      setActiveMenu([])
+    } else {
+      setActiveMenu(menu.filter(item => item.type === type))
+    }
   }
 
-  const handleShowOptionsChange = (active, type) => {
-    setActiveMenu(menu.filter(item => item.type === type))
-    setShowOptions(active)
-    setShowAdditionals(active)
+  const handleShowOptionsChange = (active, sub_type) => {
+    setActiveMenu(menu.filter(item => item.sub_type === sub_type))
   }
 
   const addProduct = (item) => {
     setValue(value + item.price)
-
-    let newProduct = {
-      id: products.length,
-      item: item.item,
-      price: item.price
-    }
-
-    if (item.type === 'hamburguer') {
-      newProduct.option = ''
-      newProduct.additionals = []
-    }
-
-    setProducts([ ...products,  newProduct])
-  }
-
-  const addOption = (item) => {
-    products[products.length - 1].option = item
-    setProducts([ ...products])
-  }
-
-  const addAdditional = (item) => {
-    products[products.length - 1].additionals.push(item.item)
-    products[products.length - 1].price = value + item.price
-    
-    setValue(value + item.price)
-    setProducts([ ...products])
+    setProducts([ ...products,  item])
   }
 
   const handleSubmit = (e) => {
@@ -119,14 +98,14 @@ const NewOrder = () => {
           <section>
             <h3>Cardápio</h3>
             <span onClick={() => handleMenuChange(false, 'breakfast')}>Café da manhã</span>
-            <span onClick={() => handleMenuChange(true, [])}>Almoço e Jantar</span>
+            <span onClick={() => handleMenuChange(true, 'all-day')}>Almoço e Jantar</span>
           </section>
 
           { showDinnerMenu && 
             (<section>
               <span onClick={() => handleShowOptionsChange(true, 'hamburguer')}>Hamburgueres</span>
-              <span onClick={() => handleShowOptionsChange(false, 'side_diches')}>Acompanhamentos</span>
-              <span onClick={() => handleShowOptionsChange(false, 'drink')}>Bebidas</span>
+              <span onClick={() => handleShowOptionsChange(false, 'side')}>Acompanhamentos</span>
+              <span onClick={() => handleShowOptionsChange(false, 'drinks')}>Bebidas</span>
             </section>)
           }
 
@@ -134,39 +113,16 @@ const NewOrder = () => {
             <section>
               {
                 activeMenu.map(item => 
-                  <span 
+                  <p 
                     key={item.id} 
                     onClick={() => addProduct(item)}
                   >
-                    {item.item}
-                  </span>
+                    {`${item.name} ${item.flavor !== null ? `+ ${item.flavor}` : ''} ${item.complement !== null ? `+ ${item.complement}` : ''}`}
+                  </p>
                 )
               }
             </section>
           }
-        
-          { showOptions && (
-            <section>
-              <h3>Selecione o tipo da carne</h3>
-              <span onClick={() => addOption('Carne bovina')}>Carne bovina</span>
-              <span onClick={() => addOption('Carne de frango')}>Carne de frango</span>
-              <span onClick={() => addOption('Vegetariano')}>Vegetariano</span>
-            </section>
-          ) }
-
-          { showAdditionals && (
-            <section>
-              <h3>Adicionais</h3>
-              { menu.filter(item => item.type === 'additional').map(item => 
-                <span 
-                  key={item.id}
-                  onClick={() => addAdditional(item)}
-                >
-                  {item.item}
-                </span>
-              )}
-            </section>
-          ) }
 
           <Orders products={products} setProducts={setProducts} value={value} setValue={setValue} />
 

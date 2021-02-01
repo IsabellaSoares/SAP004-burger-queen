@@ -1,18 +1,10 @@
 import db from '../utils/firebaseUtils'
 
-export const getData = (collection) => {
-  return db
-    .firestore()
-    .collection(collection)
-    .get()
-    .then((result) => 
-      result.docs.map(doc =>
-        ({
-          id: doc.id,
-          ...doc.data()
-        })
-      )
-    )
+export const getData = () => {
+  const headers = { 'Authorization': localStorage.getItem('token') }
+
+  return fetch('https://lab-api-bq.herokuapp.com/products', { headers })
+    .then(response => response.json());
 }
 
 export const getOrders = () => {
@@ -48,8 +40,6 @@ export const getReadyOrders = () => {
 }
 
 export const createUser = (email, password, role, restaurant) => {
-  // return db.auth().createUserWithEmailAndPassword(email, password)
-
   const requestOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -70,35 +60,17 @@ export const createOrder = (order) => {
 }
 
 export const login = (email, password) => {
-  // try {
-    // await db.auth().signInWithEmailAndPassword(email, password)
+  const requestOptions = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ 
+      email,
+      password
+    })
+  };
 
-    // const userId = await db.auth().currentUser.uid
-
-    // db
-    // .firestore()
-    // .collection('users')
-    // .doc(userId)
-    // .get()
-    // .then((result) => {
-    //   history.push(result.data().type)
-    // })
-
-    const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        email,
-        password
-      })
-    };
-  
-    return fetch('https://lab-api-bq.herokuapp.com/auth', requestOptions)
-      .then(response => response.json());
-  // } catch (error) {
-  //   console.error(error)
-  //   alert('Houve um erro ao tentar realizar o login')
-  // }
+  return fetch('https://lab-api-bq.herokuapp.com/auth', requestOptions)
+    .then(response => response.json());
 }
 
 export const startOrder = (orderId) => {

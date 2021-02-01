@@ -10,7 +10,14 @@ const Orders = ({ products, setProducts, value, setValue }) => {
   return (
     <div>
       <h2>Pedido</h2>
-      { products.map(item => <button key={item.id} onClick={() => deleteProduct(item)}>{item.item}</button>) }
+      { products.map(item => (
+        <button
+          key={item.id}
+          onClick={() => deleteProduct(item)}
+        >
+          {`${item.name} ${item.flavor !== null ? `+ ${item.flavor}` : ''} ${item.complement !== null ? `+ ${item.complement}` : ''}`}
+        </button>
+      )) }
       <h3>Valor total</h3>
       <p>{value}</p>
     </div>
