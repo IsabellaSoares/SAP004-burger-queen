@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { getReadyOrders, deliverOrder } from '../services/FirebaseService';
+import { getReadyOrders, deliverOrder } from '../services/api';
 
 const ReadyOrders = () => {
   const [orders, setOrders] = useState([]);

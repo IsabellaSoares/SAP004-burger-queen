@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 
-import { login } from '../services/FirebaseService'
+import { login } from '../services/api'
 
 import Button from '../components/Input'
 import Input from '../components/Input'
@@ -11,8 +11,9 @@ const LoginForm = () => {
   const [password, setPassword] = useState('')
   const history = useHistory()
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault()
+    
     login(email, password)
       .then(result => {
         localStorage.setItem('token', result.token);

@@ -1,94 +1,88 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import {
   getOrders,
-  startOrder,
   finishOrder,
-} from '../services/FirebaseService';
+} from '../services/api';
 
 const Kitchen = () => {
   const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [waitingClick, setWaitingClick] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
+  const getPendingOrders = () => {
+    setWaitingClick(false);
+    setLoading(true);
+
     getOrders().then((results) => {
-      const filteredResults = results.filter(result => !result.finished)
+      const filteredResults = results.filter(result => result.status === 'pending');
+
+      filteredResults.sort((result1, result2) => {
+        if (result1.createdAt > result2.createdAt) return 1;
+        if (result1.createdAt < result2.createdAt) return -1;
+      });
+
       setOrders(filteredResults);
       setLoading(false);
     });
-  }, []);
+  }
 
-  const update = (orderId) => {
-    startOrder(orderId).then(
-      getOrders().then((results) => {
-        setOrders(results);
-      })
-    );
-  };
+  const getFinishedOrders = () => {
+    setWaitingClick(false);
+    setLoading(true);
+
+    getOrders().then((results) => {
+      const filteredResults = results.filter(result => result.status === 'finished');
+
+      filteredResults.sort((result1, result2) => {
+        if (result1.createdAt > result2.createdAt) return 1;
+        if (result1.createdAt < result2.createdAt) return -1;
+      });
+
+      setOrders(filteredResults);
+      setLoading(false);
+    });
+  }
 
   const finish = (orderId) => {
     finishOrder(orderId).then(
-      getOrders().then((results) => {
-        setOrders(results);
-      })
+      setOrders(orders.filter(order => order.id !== orderId))
     );
   };
-
-  const diffMinutes = (dt2, dt1) => {
-    dt1 = new Date(dt1 * 1000)
-    dt2 = new Date(dt2 * 1000)
-
-    let diff = (dt2.getTime() - dt1.getTime()) / 1000;
-    
-    diff /= 60;
-    
-    return Math.abs(Math.round(diff));
-  }
 
   return (
     <>
       <h1>Kitchen Page</h1>
 
-      { loading ? 
+      <button onClick={() => getPendingOrders()}>
+        Ver pedidos em aberto
+      </button>
+
+      <button onClick={() => getFinishedOrders()}>
+        Ver pedidos concluídos
+      </button>
+
+      { waitingClick ? ( <h3>Escolha uma opção para visualizar os pedidos</h3> ) : loading ? 
         ( <h3>Carregando pedidos...</h3> ) : 
         (orders.map((order) => (
           <section key={order.id}>
             <h3>{`Mesa: ${order.table}`}</h3>
 
-            <h3>{`Pedido feito em: ${new Date(order.createdAt * 1000).getHours()}:${new Date(order.createdAt * 1000).getMinutes()}`}</h3>
+            <h3>{`Pedido feito em: ${new Date(order.createdAt).getDay()}/${new Date(order.createdAt).getMonth()}/${new Date(order.createdAt).getFullYear()} às ${new Date(order.createdAt).getHours()}:${new Date(order.createdAt).getMinutes()}:${new Date(order.createdAt).getSeconds()}`}</h3>
 
-            { order.updatedAt && 
+            { order.status === 'finished' && 
               (
-                <h3>{`Pedido iniciado em: ${new Date(order.updatedAt * 1000).getHours()}:${new Date(order.updatedAt * 1000).getMinutes()}`}</h3>
-              )
-            }
-
-            { order.finished && 
-              (
-                <h3>{`Pedido finalizado em: ${new Date(order.finished * 1000).getHours()}:${new Date(order.finished * 1000).getMinutes()} (${diffMinutes(order.updatedAt, order.finished)} minutos)`}</h3>
+                <h3>{`Pedido finalizado em: ${new Date(order.processedAt).getDay()}/${new Date(order.processedAt).getMonth()}/${new Date(order.processedAt).getFullYear()} às ${new Date(order.processedAt).getHours()}:${new Date(order.processedAt).getMinutes()}:${new Date(order.processedAt).getSeconds()}`}</h3>
               )
             }
 
             <section>
               <h4>Pedido</h4>
-              { order.products.map((product) => (
-                  <>
-                    <p>{product.item}</p>
-                    {product.option !== '' && <p>{product.option}</p>}
-                    {product.additionals?.length !== 0 &&
-                      product.additionals?.map((add) => <p>{add}</p>)}
-                  </>
+              { order.Products.map((product) => (
+                <p>{`${product.name} ${product.flavor !== null ? `+ ${product.flavor}` : ''} ${product.complement !== null ? `+ ${product.complement}` : ''}`}</p>
               ))}
 
-              { !order.updatedAt && 
-                (
-                  <button onClick={() => update(order.id)}>
-                    Iniciar preparo
-                  </button>
-                )
-              }
-
-              { order.updatedAt && !order.finished &&
+              { !order.processedAt &&
                 (
                   <button onClick={() => finish(order.id)}>
                     Concluir pedido

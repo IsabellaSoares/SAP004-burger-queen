@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 
-import { createUser } from '../services/FirebaseService'
+import { createUser } from '../services/api'
 // import db from '../utils/firebaseUtils'
 
 import Button from '../components/Input'
@@ -16,16 +16,6 @@ const SignUpForm = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    
-    // createUser(email, password)
-    // .then(async result => {
-    //   const userId = result.user.uid
-
-    //   await db.firestore().collection('users').doc(userId).set({
-    //     type: userType
-    //   }).then(() => history.push(userType))
-    // })
-    // .catch(error => console.error(error))
 
     createUser(email.toString(), password.toString(), role.toString(), restaurant.toString())
       .then(result => {

@@ -8,19 +8,10 @@ export const getData = () => {
 }
 
 export const getOrders = () => {
-  return db
-    .firestore()
-    .collection('orders')
-    .orderBy('createdAt', 'asc')
-    .get()
-    .then((result) => 
-      result.docs.map(doc =>
-        ({
-          id: doc.id,
-          ...doc.data()
-        })
-      )
-    )
+  const headers = { 'Authorization': localStorage.getItem('token') }
+
+  return fetch('https://lab-api-bq.herokuapp.com/orders', { headers })
+    .then(response => response.json());
 }
 
 export const getReadyOrders = () => {
@@ -87,12 +78,20 @@ export const login = (email, password) => {
     .then(response => response.json());
 }
 
-export const startOrder = (orderId) => {
-  return db.firestore().collection('orders').doc(orderId).update({ updatedAt: new Date() })
-}
-
 export const finishOrder = (orderId) => {
-  return db.firestore().collection('orders').doc(orderId).update({ finished: new Date() })
+  const requestOptions = {
+    method: 'PUT',
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': localStorage.getItem('token')
+    },
+    body: JSON.stringify({
+      status: 'finished'
+    })
+  };
+
+  return fetch(`https://lab-api-bq.herokuapp.com/orders/${orderId}`, requestOptions)
+    .then(response => response.json());
 }
 
 export const deliverOrder = (orderId) => {

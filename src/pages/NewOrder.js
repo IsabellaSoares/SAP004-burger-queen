@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { getData, createOrder } from '../services/FirebaseService'
+import { getData, createOrder } from '../services/api'
 
 import Orders from '../components/Orders'
 
