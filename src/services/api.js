@@ -1,5 +1,3 @@
-import db from '../utils/firebaseUtils'
-
 export const getData = () => {
   const headers = { 'Authorization': localStorage.getItem('token') }
 
@@ -12,22 +10,6 @@ export const getOrders = () => {
 
   return fetch('https://lab-api-bq.herokuapp.com/orders', { headers })
     .then(response => response.json());
-}
-
-export const getReadyOrders = () => {
-  return db
-    .firestore()
-    .collection('orders')
-    .orderBy('finished', 'asc')
-    .get()
-    .then((result) => 
-      result.docs.map(doc =>
-        ({
-          id: doc.id,
-          ...doc.data()
-        })
-      )
-    )
 }
 
 export const createUser = (email, password, role, restaurant) => {
@@ -78,7 +60,7 @@ export const login = (email, password) => {
     .then(response => response.json());
 }
 
-export const finishOrder = (orderId) => {
+export const updateOrder = (orderId, status) => {
   const requestOptions = {
     method: 'PUT',
     headers: { 
@@ -86,14 +68,10 @@ export const finishOrder = (orderId) => {
       'Authorization': localStorage.getItem('token')
     },
     body: JSON.stringify({
-      status: 'finished'
+      status
     })
   };
 
   return fetch(`https://lab-api-bq.herokuapp.com/orders/${orderId}`, requestOptions)
     .then(response => response.json());
-}
-
-export const deliverOrder = (orderId) => {
-  return db.firestore().collection('orders').doc(orderId).update({ delivered: true })
 }

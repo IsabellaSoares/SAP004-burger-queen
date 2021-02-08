@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import {
   getOrders,
-  finishOrder,
+  updateOrder,
 } from '../services/api';
 
 const Kitchen = () => {
@@ -45,7 +45,7 @@ const Kitchen = () => {
   }
 
   const finish = (orderId) => {
-    finishOrder(orderId).then(
+    updateOrder(orderId, 'finished').then(
       setOrders(orders.filter(order => order.id !== orderId))
     );
   };
