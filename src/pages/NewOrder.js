@@ -21,7 +21,6 @@ const NewOrder = () => {
     getData()
       .then(results => {
         setMenu(results)
-        console.log(results)
         setLoading(false)
       })
       .catch(error => console.log(error))
@@ -37,7 +36,7 @@ const NewOrder = () => {
     }
   }
 
-  const handleShowOptionsChange = (active, sub_type) => {
+  const handleShowOptionsChange = (sub_type) => {
     setActiveMenu(menu.filter(item => item.sub_type === sub_type))
   }
 
@@ -49,18 +48,14 @@ const NewOrder = () => {
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    const order = {
-      createdAt: new Date(),
-      updatedAt: null,
-      finished: null,
-      delivered: false,
-      name,
-      table,
-      value,
-      products
-    }
+    const productsOrder = products.map(product => {
+      return {
+        id: product.id,
+        qtd: 1
+      }
+    });
 
-    createOrder(order)
+    createOrder(name, table, productsOrder)
       .then(() => {
         alert('Pedido criado!')
         clearForm()

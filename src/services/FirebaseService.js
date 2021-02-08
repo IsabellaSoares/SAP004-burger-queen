@@ -55,8 +55,22 @@ export const createUser = (email, password, role, restaurant) => {
     .then(response => response.json());
 }
 
-export const createOrder = (order) => {
-  return db.firestore().collection('orders').add(order)
+export const createOrder = (client, table, products) => {
+  const requestOptions = {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': localStorage.getItem('token')
+    },
+    body: JSON.stringify({
+      client,
+      table,
+      products
+    })
+  };
+
+  return fetch('https://lab-api-bq.herokuapp.com/orders', requestOptions)
+    .then(response => response.json());
 }
 
 export const login = (email, password) => {
